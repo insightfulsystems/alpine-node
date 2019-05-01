@@ -8,6 +8,7 @@ export BUILD_IMAGE_NAME=local/alpine-base
 export NODE_MAJOR_VERSION=10
 export NODE_VERSION=10.15.3
 export TARGET_ARCHITECTURES=amd64 arm32v6 arm32v7
+export SHELL=/bin/bash
 
 # Permanent local overrides
 -include .env
@@ -59,10 +60,21 @@ push-%:
 	$(eval ARCH := $*)
 	docker push $(IMAGE_NAME):$(NODE_MAJOR_VERSION)-$(ARCH)
 
+expand-%: # expand architecture variants for manifest
+	@if [ "$*" == "amd64" ] ; then \
+	   echo '--arch $*'; \
+	elif [[ "$*" == *"arm"* ]] ; then \
+	   echo '--arch arm --variant $*' | cut -c 1-21,27-; \
+	fi
+
 manifest:
 	docker manifest create --amend \
 		$(IMAGE_NAME):latest \
 		$(foreach arch, $(TARGET_ARCHITECTURES), $(IMAGE_NAME):$(NODE_MAJOR_VERSION)-$(arch) )
+	$(foreach arch, $(TARGET_ARCHITECTURES), \
+		docker manifest annotate \
+			$(IMAGE_NAME):latest \
+			$(IMAGE_NAME):$(NODE_MAJOR_VERSION)-$(arch) $(shell make expand-$(arch));)
 	docker manifest push $(IMAGE_NAME):latest
 
 clean:
