@@ -4,6 +4,7 @@ export VCS_URL=https://github.com/insightfulsystems/alpine-node
 export BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
 export TAG_DATE=`date -u +"%Y%m%d"`
 export ALPINE_VERSION=alpine:3.9
+export QEMU_VERSION=4.0.0-2
 export BUILD_IMAGE_NAME=local/alpine-base
 export NODE_MAJOR_VERSION=10
 export NODE_VERSION=10.15.3
@@ -19,7 +20,7 @@ qemu:
 	-docker run --rm --privileged multiarch/qemu-user-static:register --reset
 	-mkdir tmp 
 	cd tmp && \
-	curl -L -o qemu-arm-static.tar.gz https://github.com/multiarch/qemu-user-static/releases/download/v3.1.0-3/qemu-arm-static.tar.gz && \
+	curl -L -o qemu-arm-static.tar.gz https://github.com/multiarch/qemu-user-static/releases/download/v$(QEMU_VERSION)/qemu-arm-static.tar.gz && \
 	tar xzf qemu-arm-static.tar.gz && \
 	cp qemu-arm-static ../qemu/
 
