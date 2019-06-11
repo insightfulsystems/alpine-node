@@ -13,7 +13,7 @@ export SHELL=/bin/bash
 # Permanent local overrides
 -include .env
 
-.PHONY: qemu wrap node push manifest clean
+.PHONY: qemu wrap build push manifest clean
 
 qemu:
 	-docker run --rm --privileged multiarch/qemu-user-static:register --reset
@@ -39,10 +39,10 @@ wrap-%:
 		--build-arg VCS_URL=$(VCS_URL) \
 		-t $(BUILD_IMAGE_NAME):$(ARCH) qemu
 
-node:
-	$(foreach var, $(TARGET_ARCHITECTURES), make node-$(var);)
+build:
+	$(foreach var, $(TARGET_ARCHITECTURES), make build-$(var);)
 
-node-%: # This assumes we have a folder for each major version
+build-%: # This assumes we have a folder for each major version
 	$(eval ARCH := $*)
 	docker build --build-arg BUILD_DATE=$(BUILD_DATE) \
 		--build-arg ARCH=$(ARCH) \
