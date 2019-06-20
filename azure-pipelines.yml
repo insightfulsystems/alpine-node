@@ -6,11 +6,13 @@ trigger:
 stages:
 - stage: amd64
   displayName: Build for amd64
+  dependsOn: [] 
   variables:
     - name: ARCH
       value: amd64 
   jobs:
   - job: 
+    displayName: build and push image for $(ARCH)
     pool:
         vmImage: 'ubuntu-latest'
     steps:
@@ -31,11 +33,13 @@ stages:
 
 - stage: arm32v7
   displayName: Build for arm32v7
+  dependsOn: []
   variables:
     - name: ARCH
       value: arm32v7 
   jobs:
   - job: 
+    displayName: build and push image for $(ARCH)
     pool:
         vmImage: 'ubuntu-latest'
     steps:
@@ -55,11 +59,13 @@ stages:
 
 - stage: arm32v6
   displayName: Build for arm32v6
+  dependsOn: []
   variables:
     - name: ARCH
       value: arm32v6
   jobs:
   - job: 
+    displayName: build and push image for $(ARCH)
     pool:
         vmImage: 'ubuntu-latest'
     steps:
