@@ -24,14 +24,14 @@ stages:
             make qemu
             make wrap-$(ARCH)
           displayName: setup
-        - script: |
-            make build-$(ARCH)
-          displayName: build $(ARCH)
         - task: Docker@2
           displayName: login to Docker Hub
           inputs:
             command: login
             containerRegistry: insightfulbuildbot
+        - script: |
+            make build-$(ARCH)
+          displayName: build $(ARCH)
         - script: |
             make push-$(ARCH)
           displayName: push image for $(ARCH)
@@ -57,14 +57,14 @@ stages:
             make qemu
             make wrap-$(ARCH)
           displayName: setup
-        - script: |
-            make build-$(ARCH)
-          displayName: build $(ARCH)
         - task: Docker@2
           displayName: login to Docker Hub
           inputs:
             command: login
             containerRegistry: insightfulbuildbot
+        - script: |
+            make build-$(ARCH)
+          displayName: build $(ARCH)
         - script: |
             make push-$(ARCH)
           displayName: push image for $(ARCH)
@@ -89,14 +89,14 @@ stages:
             make qemu
             make wrap-$(ARCH)
           displayName: setup
-        - script: |
-            make build-$(ARCH)
-          displayName: build $(ARCH)
         - task: Docker@2
           displayName: login to Docker Hub
           inputs:
             command: login
             containerRegistry: insightfulbuildbot
+        - script: |
+            make build-$(ARCH)
+          displayName: build $(ARCH)
         - script: |
             make push-$(ARCH)
           displayName: push image for $(ARCH)
