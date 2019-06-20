@@ -38,7 +38,7 @@ stages:
 
 
 - stage: arm32v7
-  displayName: arm32v7 (Raspberry Pi 2+ and other armhf)
+  displayName: arm32v7 (Pi 2+ and other armhf)
   dependsOn: []
   variables:
     - name: ARCH
@@ -68,9 +68,40 @@ stages:
         - script: |
             make push-$(ARCH)
           displayName: push image for $(ARCH)
+          
+- stage: arm64v8
+  displayName: arm64v8 (Pi 3+ and other ARM64)
+  dependsOn: []
+  variables:
+    - name: ARCH
+      value: arm64v8
+  jobs:
+  - job: 
+    displayName: build and push image
+    timeoutInMinutes: 240
+    pool:
+        vmImage: 'ubuntu-latest'
+    steps:
+        - script: |
+            echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+            mkdir -p $HOME/.docker && echo '{"experimental":"enabled"}' | tee $HOME/.docker/config.json
+            sudo service docker restart
+            make qemu
+          displayName: setup
+        - task: Docker@2
+          displayName: login to Docker Hub
+          inputs:
+            command: login
+            containerRegistry: insightfulbuildbot
+        - script: |
+            make build-$(ARCH)
+          displayName: build $(ARCH)
+        - script: |
+            make push-$(ARCH)
+          displayName: push image for $(ARCH)
 
 - stage: arm32v6
-  displayName: arm32v6 (Raspberry Pi A/B/Zero)
+  displayName: arm32v6 (Pi A/B/Zero)
   dependsOn: []
   variables:
     - name: ARCH

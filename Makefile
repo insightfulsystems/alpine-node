@@ -9,6 +9,7 @@ export BUILD_IMAGE_NAME=local/alpine-base
 export NODE_MAJOR_VERSION=10
 export NODE_VERSION=10.16.0
 export TARGET_ARCHITECTURES=amd64 arm32v6 arm32v7
+export QEMU_ARCHITECTURES=arm aarch64
 export SHELL=/bin/bash
 
 # Permanent local overrides
@@ -19,22 +20,34 @@ export SHELL=/bin/bash
 qemu:
 	-docker run --rm --privileged multiarch/qemu-user-static:register --reset
 	-mkdir tmp 
+		$(foreach ARCH, $(QEMU_ARCHITECTURES), make fetch-qemu-$(ARCH);)
+
+fetch-qemu-%:
+	$(eval ARCH := $*)
 	cd tmp && \
-	curl -L -o qemu-arm-static.tar.gz https://github.com/multiarch/qemu-user-static/releases/download/v$(QEMU_VERSION)/qemu-arm-static.tar.gz && \
-	tar xzf qemu-arm-static.tar.gz && \
-	cp qemu-arm-static ../qemu/
+	curl -L -o qemu-$(ARCH)-static.tar.gz \
+		https://github.com/multiarch/qemu-user-static/releases/download/v$(QEMU_VERSION)/qemu-$(ARCH)-static.tar.gz && \
+	tar xzf qemu-$(ARCH)-static.tar.gz && \
+	cp qemu-$(ARCH)-static ../qemu/
 
 wrap:
-	$(foreach arch, $(TARGET_ARCHITECTURES), make wrap-$(arch);)
+	$(foreach ARCH, $(TARGET_ARCHITECTURES), make wrap-$(ARCH);)
 
 wrap-amd64:
 	docker pull amd64/$(ALPINE_VERSION)
 	docker tag amd64/$(ALPINE_VERSION) $(BUILD_IMAGE_NAME):amd64
 
+wrap-translate-%: 
+	@if [[ "$*" == "arm64v8" ]] ; then \
+	   echo "aarch64"; \
+	else \
+		echo "arm"; \
+	fi 
+
 wrap-%:
 	$(eval ARCH := $*)
 	docker build --build-arg BUILD_DATE=$(BUILD_DATE) \
-		--build-arg ARCH=$(ARCH) \
+		--build-arg ARCH=$(shell make wrap-translate-$(ARCH)) \
 		--build-arg BASE=$(ARCH)/$(ALPINE_VERSION) \
 		--build-arg VCS_REF=$(VCS_REF) \
 		--build-arg VCS_URL=$(VCS_URL) \
