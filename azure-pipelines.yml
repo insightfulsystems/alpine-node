@@ -10,10 +10,30 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- script: |
+- displayName: Setup Docker and QEMU
+  script: |
     docker --version  # document the version Pipelines is using
     echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
     mkdir -p $HOME/.docker && echo '{"experimental":"enabled"}' | tee $HOME/.docker/config.json
     sudo service docker restart
     make qemu
-  displayName: Setup Docker and QEMU
+
+- displayName: amd64
+  script: |
+    make wrap-amd64
+    make node-amd64
+    make push-amd64
+
+- displayName: arm32v6
+  script: |
+    make wrap-arm32v6
+    make node-arm32v6
+    make push-arm32v6
+- displayName: arm32v7
+  script: |
+    make wrap-arm32v7
+    make node-arm32v7
+    make push-arm32v7
+- displayName: manifest
+  script: |
+    make manifest
