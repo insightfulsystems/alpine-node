@@ -92,10 +92,7 @@ stages:
             echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
             mkdir -p $HOME/.docker && echo '{"experimental":"enabled"}' | tee $HOME/.docker/config.json
             sudo service docker restart
-  - job: manifest
-    dependsOn: setup
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
+          displayName: setup
         - script: |
             make manifest
+          displayName: push manifest
