@@ -5,14 +5,14 @@ trigger:
 
 stages:
 - stage: amd64
-  displayName: Build for amd64
+  displayName: amd64 (Intel/AMD64)
   dependsOn: [] 
   variables:
     - name: ARCH
       value: amd64 
   jobs:
   - job: 
-    displayName: build and push image for $(ARCH)
+    displayName: build and push image
     pool:
         vmImage: 'ubuntu-latest'
     steps:
@@ -32,14 +32,14 @@ stages:
 
 
 - stage: arm32v7
-  displayName: Build for arm32v7
+  displayName: arm32v7 (Raspberry Pi 2+ and other armhf)
   dependsOn: []
   variables:
     - name: ARCH
       value: arm32v7 
   jobs:
   - job: 
-    displayName: build and push image for $(ARCH)
+    displayName: build and push image
     pool:
         vmImage: 'ubuntu-latest'
     steps:
@@ -58,14 +58,14 @@ stages:
           displayName: push image for $(ARCH)
 
 - stage: arm32v6
-  displayName: Build for arm32v6
+  displayName: arm32v6 (Raspberry Pi A/B/Zero)
   dependsOn: []
   variables:
     - name: ARCH
       value: arm32v6
   jobs:
   - job: 
-    displayName: build and push image for $(ARCH)
+    displayName: build and push image
     pool:
         vmImage: 'ubuntu-latest'
     steps:
@@ -84,7 +84,7 @@ stages:
           displayName: push image for $(ARCH)
 
 - stage: manifest
-  displayName: Build multi-arch manifest
+  displayName: multi-arch manifest
   dependsOn: 
     - amd64
     - arm32v7
