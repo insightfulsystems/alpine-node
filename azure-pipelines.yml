@@ -32,7 +32,6 @@ stages:
         - script: |
             make push-$(ARCH)
 
-stages:
 - stage: amd64
   displayName: Build for amd64
   variables:
