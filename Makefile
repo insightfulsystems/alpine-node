@@ -81,15 +81,23 @@ expand-%: # expand architecture variants for manifest
 	   echo '--arch arm --variant $*' | cut -c 1-21,27-; \
 	fi
 
-manifest:
-	docker manifest create --amend \
+setup-manifest:
+	@if [ ! -f "~/.docker/config.json" ] ; then \
+		mkdir ~/.docker && \
+		echo '{ "experimental": "enabled" }' > ~/.docker/config.json ; \
+	fi
+
+build-manifest:
+	docker --config ~/.docker manifest create --amend \
 		$(IMAGE_NAME):latest \
 		$(foreach arch, $(TARGET_ARCHITECTURES), $(IMAGE_NAME):$(NODE_MAJOR_VERSION)-$(arch) )
 	$(foreach arch, $(TARGET_ARCHITECTURES), \
 		docker manifest annotate \
 			$(IMAGE_NAME):latest \
 			$(IMAGE_NAME):$(NODE_MAJOR_VERSION)-$(arch) $(shell make expand-$(arch));)
-	docker manifest push $(IMAGE_NAME):latest
+
+push-manifest:
+	docker --config ~/.docker manifest push $(IMAGE_NAME):latest
 
 clean:
 	-docker rm -fv $$(docker ps -a -q -f status=exited)

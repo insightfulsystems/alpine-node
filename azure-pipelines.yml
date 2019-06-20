@@ -13,14 +13,11 @@ stages:
   jobs:
   - job: 
     displayName: build and push image
-    timeoutInMinutes: 120
+    timeoutInMinutes: 60
     pool:
         vmImage: 'ubuntu-latest'
     steps:
         - script: |
-            echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
-            mkdir -p $HOME/.docker && echo '{"experimental":"enabled"}' | tee $HOME/.docker/config.json
-            sudo service docker restart
             make qemu
             make wrap-$(ARCH)
           displayName: setup
@@ -46,14 +43,11 @@ stages:
   jobs:
   - job: 
     displayName: build and push image
-    timeoutInMinutes: 240
+    timeoutInMinutes: 320
     pool:
         vmImage: 'ubuntu-latest'
     steps:
         - script: |
-            echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
-            mkdir -p $HOME/.docker && echo '{"experimental":"enabled"}' | tee $HOME/.docker/config.json
-            sudo service docker restart
             make qemu
             make wrap-$(ARCH)
           displayName: setup
@@ -68,7 +62,7 @@ stages:
         - script: |
             make push-$(ARCH)
           displayName: push image for $(ARCH)
-          
+
 - stage: arm64v8
   displayName: arm64v8 (Pi 3+ and other ARM64)
   dependsOn: []
@@ -78,15 +72,13 @@ stages:
   jobs:
   - job: 
     displayName: build and push image
-    timeoutInMinutes: 240
+    timeoutInMinutes: 320
     pool:
         vmImage: 'ubuntu-latest'
     steps:
         - script: |
-            echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
-            mkdir -p $HOME/.docker && echo '{"experimental":"enabled"}' | tee $HOME/.docker/config.json
-            sudo service docker restart
             make qemu
+            make wrap-$(ARCH)
           displayName: setup
         - task: Docker@2
           displayName: login to Docker Hub
@@ -109,14 +101,11 @@ stages:
   jobs:
   - job: 
     displayName: build and push image
-    timeoutInMinutes: 240
+    timeoutInMinutes: 320
     pool:
         vmImage: 'ubuntu-latest'
     steps:
         - script: |
-            echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
-            mkdir -p $HOME/.docker && echo '{"experimental":"enabled"}' | tee $HOME/.docker/config.json
-            sudo service docker restart
             make qemu
             make wrap-$(ARCH)
           displayName: setup
@@ -138,21 +127,14 @@ stages:
     - amd64
     - arm32v7
     - arm32v6
+    - arm64v8
   jobs:
-  - job: 
+  - job: Manifest 
     pool:
       vmImage: 'ubuntu-latest'
     steps:
         - script: |
-            echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
-            mkdir -p $HOME/.docker && echo '{"experimental":"enabled"}' | tee $HOME/.docker/config.json
-            sudo service docker restart
-          displayName: setup
-        - task: Docker@2
-          displayName: login to Docker Hub
-          inputs:
-            command: login
-            containerRegistry: insightfulbuildbot
-        - script: |
-            make manifest
-          displayName: push manifest
+            make setup-manifest
+            docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
+            make build-manifest
+            make push-manifest
