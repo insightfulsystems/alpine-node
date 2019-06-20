@@ -7,7 +7,7 @@ export ALPINE_VERSION=alpine:3.10
 export QEMU_VERSION=4.0.0-2
 export BUILD_IMAGE_NAME=local/alpine-base
 export NODE_MAJOR_VERSION=10
-export NODE_VERSION=10.15.3
+export NODE_VERSION=10.16.0
 export TARGET_ARCHITECTURES=amd64 arm32v6 arm32v7
 export SHELL=/bin/bash
 
