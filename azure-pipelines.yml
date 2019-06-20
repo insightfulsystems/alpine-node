@@ -3,9 +3,6 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
-
 stages:
 - stage: amd64
   displayName: Build for amd64
@@ -14,6 +11,8 @@ stages:
       value: amd64 
   jobs:
   - job: setup
+    pool:
+        vmImage: 'ubuntu-latest'
     steps:
         - script: |
             echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
@@ -22,40 +21,20 @@ stages:
             make qemu
             make wrap-$(ARCH)
   - job: build
+    pool:
+        vmImage: 'ubuntu-latest'
     dependsOn: setup
     steps:
         - script: |
             make build-$(ARCH)
   - job: push
+    pool:
+        vmImage: 'ubuntu-latest'
     dependsOn: build
     steps:
         - script: |
             make push-$(ARCH)
 
-- stage: amd64
-  displayName: Build for amd64
-  variables:
-    - name: ARCH
-      value: amd64 
-  jobs:
-  - job: setup
-    steps:
-        - script: |
-            echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
-            mkdir -p $HOME/.docker && echo '{"experimental":"enabled"}' | tee $HOME/.docker/config.json
-            sudo service docker restart
-            make qemu
-            make wrap-$(ARCH)
-  - job: build
-    dependsOn: setup
-    steps:
-        - script: |
-            make build-$(ARCH)
-  - job: push
-    dependsOn: build
-    steps:
-        - script: |
-            make push-$(ARCH)
 
 - stage: arm32v7
   displayName: Build for arm32v7
@@ -64,6 +43,8 @@ stages:
       value: arm32v7 
   jobs:
   - job: setup
+    pool:
+      vmImage: 'ubuntu-latest'  
     steps:
         - script: |
             echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
@@ -73,11 +54,15 @@ stages:
             make wrap-$(ARCH)
   - job: build
     dependsOn: setup
+    pool:
+      vmImage: 'ubuntu-latest'  
     steps:
         - script: |
             make build-$(ARCH)
   - job: push
     dependsOn: build
+    pool:
+      vmImage: 'ubuntu-latest'
     steps:
         - script: |
             make push-$(ARCH)
@@ -89,6 +74,8 @@ stages:
       value: arm32v6
   jobs:
   - job: setup
+    pool:
+      vmImage: 'ubuntu-latest'
     steps:
         - script: |
             echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
@@ -98,11 +85,15 @@ stages:
             make wrap-$(ARCH)
   - job: build
     dependsOn: setup
+    pool:
+      vmImage: 'ubuntu-latest'
     steps:
         - script: |
             make build-$(ARCH)
   - job: push
     dependsOn: build
+    pool:
+      vmImage: 'ubuntu-latest'
     steps:
         - script: |
             make push-$(ARCH)
@@ -112,6 +103,8 @@ stages:
   dependsOn: amd64 arm32v7 arm32v6
   jobs:
   - job: setup
+    pool:
+      vmImage: 'ubuntu-latest'
     steps:
         - script: |
             echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
@@ -119,6 +112,8 @@ stages:
             sudo service docker restart
   - job: manifest
     dependsOn: setup
+    pool:
+      vmImage: 'ubuntu-latest'
     steps:
         - script: |
             make manifest
