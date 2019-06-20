@@ -10,7 +10,7 @@ stages:
     - name: ARCH
       value: amd64 
   jobs:
-  - job: setup
+  - job: 
     pool:
         vmImage: 'ubuntu-latest'
     steps:
@@ -20,20 +20,13 @@ stages:
             sudo service docker restart
             make qemu
             make wrap-$(ARCH)
-  - job: build
-    pool:
-        vmImage: 'ubuntu-latest'
-    dependsOn: setup
-    steps:
+          displayName: setup
         - script: |
             make build-$(ARCH)
-  - job: push
-    pool:
-        vmImage: 'ubuntu-latest'
-    dependsOn: build
-    steps:
+          displayName: build $(ARCH)
         - script: |
             make push-$(ARCH)
+          displayName: push image for $(ARCH)
 
 
 - stage: arm32v7
@@ -42,9 +35,9 @@ stages:
     - name: ARCH
       value: arm32v7 
   jobs:
-  - job: setup
+  - job: 
     pool:
-      vmImage: 'ubuntu-latest'  
+        vmImage: 'ubuntu-latest'
     steps:
         - script: |
             echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
@@ -52,20 +45,13 @@ stages:
             sudo service docker restart
             make qemu
             make wrap-$(ARCH)
-  - job: build
-    dependsOn: setup
-    pool:
-      vmImage: 'ubuntu-latest'  
-    steps:
+          displayName: setup
         - script: |
             make build-$(ARCH)
-  - job: push
-    dependsOn: build
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
+          displayName: build $(ARCH)
         - script: |
             make push-$(ARCH)
+          displayName: push image for $(ARCH)
 
 - stage: arm32v6
   displayName: Build for arm32v6
@@ -73,9 +59,9 @@ stages:
     - name: ARCH
       value: arm32v6
   jobs:
-  - job: setup
+  - job: 
     pool:
-      vmImage: 'ubuntu-latest'
+        vmImage: 'ubuntu-latest'
     steps:
         - script: |
             echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
@@ -83,20 +69,13 @@ stages:
             sudo service docker restart
             make qemu
             make wrap-$(ARCH)
-  - job: build
-    dependsOn: setup
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
+          displayName: setup
         - script: |
             make build-$(ARCH)
-  - job: push
-    dependsOn: build
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
+          displayName: build $(ARCH)
         - script: |
             make push-$(ARCH)
+          displayName: push image for $(ARCH)
 
 - stage: manifest
   displayName: Build multi-arch manifest
@@ -105,7 +84,7 @@ stages:
     - arm32v7
     - arm32v6
   jobs:
-  - job: setup
+  - job: 
     pool:
       vmImage: 'ubuntu-latest'
     steps:
