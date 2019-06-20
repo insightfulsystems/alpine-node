@@ -100,7 +100,10 @@ stages:
 
 - stage: manifest
   displayName: Build multi-arch manifest
-  dependsOn: amd64 arm32v7 arm32v6
+  dependsOn: 
+    - amd64
+    - arm32v7
+    - arm32v6
   jobs:
   - job: setup
     pool:
