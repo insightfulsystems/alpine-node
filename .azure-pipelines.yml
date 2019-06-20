@@ -43,7 +43,7 @@ stages:
   jobs:
   - job: 
     displayName: build and push image
-    timeoutInMinutes: 320
+    timeoutInMinutes: 480
     pool:
         vmImage: 'ubuntu-latest'
     steps:
@@ -72,7 +72,7 @@ stages:
   jobs:
   - job: 
     displayName: build and push image
-    timeoutInMinutes: 320
+    timeoutInMinutes: 480
     pool:
         vmImage: 'ubuntu-latest'
     steps:
@@ -101,7 +101,7 @@ stages:
   jobs:
   - job: 
     displayName: build and push image
-    timeoutInMinutes: 320
+    timeoutInMinutes: 480
     pool:
         vmImage: 'ubuntu-latest'
     steps:
