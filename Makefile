@@ -5,7 +5,8 @@ export BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
 export TAG_DATE=`date -u +"%Y%m%d"`
 export ALPINE_VERSION=alpine:3.10
 export QEMU_VERSION=4.0.0-2
-export BASE_IMAGE=local/alpine-base
+export BASE_IMAGE=alpine-base
+export BUILD_IMAGE=local/alpine-base
 export NODE_MAJOR_VERSION=10
 export NODE_VERSION=10.16.0
 export TARGET_ARCHITECTURES=amd64 arm32v6 arm32v7 arm64v8
@@ -55,7 +56,7 @@ wrap-%:
 	@echo "--> Building local base container for $(ARCH)"
 	$(DOCKER) build --build-arg BUILD_DATE=$(BUILD_DATE) \
 		--build-arg ARCH=$(shell make wrap-translate-$(ARCH)) \
-		--build-arg BASE=$(BASE_IMAGE):$(ARCH) \
+		--build-arg BASE=$(ARCH)/$(BASE_IMAGE):$(ALPINE_VERSION) \
 		--build-arg VCS_REF=$(VCS_REF) \
 		--build-arg VCS_URL=$(VCS_URL) \
 		-t $(BASE_IMAGE):$(ARCH) qemu
@@ -68,7 +69,7 @@ build-%: # This assumes we have a folder for each major version
 	$(eval ARCH := $*)
 	docker build --build-arg BUILD_DATE=$(BUILD_DATE) \
 		--build-arg ARCH=$(ARCH) \
-		--build-arg BASE=$(BASE_IMAGE):$(ARCH) \
+		--build-arg BASE=$(BUILD_IMAGE):$(ARCH) \
 		--build-arg NODE_VERSION=$(NODE_VERSION) \
 		--build-arg VCS_REF=$(VCS_REF) \
 		--build-arg VCS_URL=$(VCS_URL) \
