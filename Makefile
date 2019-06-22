@@ -55,7 +55,7 @@ wrap-%:
 	@echo "--> Building local base container for $(ARCH)"
 	$(DOCKER) build --build-arg BUILD_DATE=$(BUILD_DATE) \
 		--build-arg ARCH=$(shell make wrap-translate-$(ARCH)) \
-		--build-arg BASE=$(BASE_IMAGE):$(ARCH)
+		--build-arg BASE=$(BASE_IMAGE):$(ARCH) \
 		--build-arg VCS_REF=$(VCS_REF) \
 		--build-arg VCS_URL=$(VCS_URL) \
 		-t $(BASE_IMAGE):$(ARCH) qemu
