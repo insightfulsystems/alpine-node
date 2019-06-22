@@ -5,120 +5,68 @@ trigger:
 
 stages:
 - stage: amd64
-  displayName: amd64 (Intel/AMD64)
+  displayName: amd64 (Intel/AMD)
   dependsOn: [] 
-  variables:
-    - name: ARCH
-      value: amd64 
   jobs:
-  - job: 
-    displayName: build and push image
-    timeoutInMinutes: 60
-    pool:
-        vmImage: 'ubuntu-latest'
-    steps:
-        - script: |
-            make qemu
-            make wrap-$(ARCH)
-          displayName: setup
-        - script: |
-            make build-$(ARCH)
-          displayName: build $(ARCH)
-        - script: |
-            docker --config=~/.docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
-            make push-$(ARCH)
-          displayName: push image for $(ARCH)
+  - template: .azure-pipelines-job.yml 
+    parameters:
+      arch: amd64
+      timeout: 120
+      username: $(DOCKER_USERNAME)
+      password: $(DOCKER_PASSWORD)
 
+
+- stage: arm32v6
+  displayName: arm32v6 (Pi B+/Zero+)
+  dependsOn: []
+  jobs:
+  - template: .azure-pipelines-job.yml
+    parameters:
+      arch: arm32v6
+      timeout: 240
+      username: $(DOCKER_USERNAME)
+      password: $(DOCKER_PASSWORD)
+      
 
 - stage: arm32v7
   displayName: arm32v7 (Pi 2+ and other armhf)
   dependsOn: []
-  variables:
-    - name: ARCH
-      value: arm32v7 
   jobs:
-  - job: 
-    displayName: build and push image
-    timeoutInMinutes: 480
-    pool:
-        vmImage: 'ubuntu-latest'
-    steps:
-        - script: |
-            make qemu
-            make wrap-$(ARCH)
-          displayName: setup
-        - script: |
-            make build-$(ARCH)
-          displayName: build $(ARCH)
-        - script: |
-            docker --config=~/.docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
-            make push-$(ARCH)
-          displayName: push image for $(ARCH)
+  - template: .azure-pipelines-job.yml
+    parameters:
+      arch: arm32v7
+      timeout: 240
+      username: $(DOCKER_USERNAME)
+      password: $(DOCKER_PASSWORD)
+
 
 - stage: arm64v8
   displayName: arm64v8 (Pi 3+ and other ARM64)
   dependsOn: []
-  variables:
-    - name: ARCH
-      value: arm64v8
   jobs:
-  - job: 
-    displayName: build and push image
-    timeoutInMinutes: 480
-    pool:
-        vmImage: 'ubuntu-latest'
-    steps:
-        - script: |
-            make qemu
-            make wrap-$(ARCH)
-          displayName: setup
-        - script: |
-            make build-$(ARCH)
-          displayName: build $(ARCH)
-        - script: |
-            docker --config=~/.docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
-            make push-$(ARCH)
-          displayName: push image for $(ARCH)
+  - template: .azure-pipelines-job.yml
+    parameters:
+      arch: arm64v8
+      timeout: 240
+      username: $(DOCKER_USERNAME)
+      password: $(DOCKER_PASSWORD)
 
-- stage: arm32v6
-  displayName: arm32v6 (Pi A/B/Zero)
-  dependsOn: []
-  variables:
-    - name: ARCH
-      value: arm32v6
-  jobs:
-  - job: 
-    displayName: build and push image
-    timeoutInMinutes: 480
-    pool:
-        vmImage: 'ubuntu-latest'
-    steps:
-        - script: |
-            make qemu
-            make wrap-$(ARCH)
-          displayName: setup
-        - script: |
-            make build-$(ARCH)
-          displayName: build $(ARCH)
-        - script: |
-            docker --config=~/.docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
-            make push-$(ARCH)
-          displayName: push image for $(ARCH)
 
-- stage: manifest
+- stage: Manifest
   displayName: multi-arch manifest
   dependsOn: 
     - amd64
-    - arm32v7
     - arm32v6
+    - arm32v7
     - arm64v8
+  variables:
+    - name: DOCKER
+      value: docker --config=/home/vsts/.docker
   jobs:
   - job: Manifest 
     pool:
       vmImage: 'ubuntu-latest'
     steps:
         - script: |
-            make setup-manifest
-            docker --config=~/.docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
-            make build-manifest
-            make push-manifest
+            echo $(DOCKER_PASSWORD) | $(DOCKER) login --username $(DOCKER_USERNAME) --password-stdin
+            make manifest
