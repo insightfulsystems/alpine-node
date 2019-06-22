@@ -59,7 +59,7 @@ wrap-%:
 		--build-arg BASE=$(ARCH)/$(BASE_IMAGE):$(ALPINE_VERSION) \
 		--build-arg VCS_REF=$(VCS_REF) \
 		--build-arg VCS_URL=$(VCS_URL) \
-		-t $(BASE_IMAGE):$(ARCH) qemu
+		-t $(BUILD_IMAGE):$(ARCH) qemu
 	@echo "--> Done building local base container for $(ARCH)"
 
 build:
