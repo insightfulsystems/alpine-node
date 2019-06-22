@@ -5,7 +5,7 @@ export BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
 export TAG_DATE=`date -u +"%Y%m%d"`
 export ALPINE_VERSION=alpine:3.10
 export QEMU_VERSION=4.0.0-2
-export BUILD_IMAGE_NAME=local/alpine-base
+export BASE_IMAGE=local/alpine-base
 export NODE_MAJOR_VERSION=10
 export NODE_VERSION=10.16.0
 export TARGET_ARCHITECTURES=amd64 arm32v6 arm32v7 arm64v8
@@ -41,7 +41,7 @@ wrap:
 
 wrap-amd64:
 	docker pull amd64/$(ALPINE_VERSION)
-	docker tag amd64/$(ALPINE_VERSION) $(BUILD_IMAGE_NAME):amd64
+	docker tag amd64/$(ALPINE_VERSION) $(BASE_IMAGE):amd64
 
 wrap-translate-%: 
 	@if [[ "$*" == "arm64v8" ]] ; then \
@@ -55,10 +55,10 @@ wrap-%:
 	@echo "--> Building local base container for $(ARCH)"
 	$(DOCKER) build --build-arg BUILD_DATE=$(BUILD_DATE) \
 		--build-arg ARCH=$(shell make wrap-translate-$(ARCH)) \
-		--build-arg BASE=$(ARCH)/$(UBUNTU_VERSION) \
+		--build-arg BASE=$(BASE_IMAGE):$(ARCH)
 		--build-arg VCS_REF=$(VCS_REF) \
 		--build-arg VCS_URL=$(VCS_URL) \
-		-t $(BUILD_IMAGE_NAME):$(ARCH) qemu
+		-t $(BASE_IMAGE):$(ARCH) qemu
 	@echo "--> Done building local base container for $(ARCH)"
 
 build:
@@ -68,7 +68,7 @@ build-%: # This assumes we have a folder for each major version
 	$(eval ARCH := $*)
 	docker build --build-arg BUILD_DATE=$(BUILD_DATE) \
 		--build-arg ARCH=$(ARCH) \
-		--build-arg BASE=$(BUILD_IMAGE_NAME):$(ARCH) \
+		--build-arg BASE=$(BASE_IMAGE):$(ARCH) \
 		--build-arg NODE_VERSION=$(NODE_VERSION) \
 		--build-arg VCS_REF=$(VCS_REF) \
 		--build-arg VCS_URL=$(VCS_URL) \
@@ -114,6 +114,6 @@ clean:
 	@echo "==> Cleaning up old images..."
 	-$(DOCKER) rm -fv $$($(DOCKER) ps -a -q -f status=exited)
 	-$(DOCKER) rmi -f $$($(DOCKER) images -q -f dangling=true)
-	-$(DOCKER) rmi -f $(BUILD_IMAGE_NAME)
+	-$(DOCKER) rmi -f $(BASE_IMAGE)
 	-$(DOCKER) rmi -f $$($(DOCKER) images --format '{{.Repository}}:{{.Tag}}' | grep $(IMAGE_NAME))
 	@echo "==> Done."
