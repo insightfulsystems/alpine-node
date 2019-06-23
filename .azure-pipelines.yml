@@ -23,7 +23,7 @@ stages:
   - template: .azure-pipelines-job.yml
     parameters:
       arch: arm32v6
-      timeout: 240
+      timeout: 320
       username: $(DOCKER_USERNAME)
       password: $(DOCKER_PASSWORD)
       
@@ -35,7 +35,7 @@ stages:
   - template: .azure-pipelines-job.yml
     parameters:
       arch: arm32v7
-      timeout: 240
+      timeout: 320
       username: $(DOCKER_USERNAME)
       password: $(DOCKER_PASSWORD)
 
@@ -47,7 +47,7 @@ stages:
   - template: .azure-pipelines-job.yml
     parameters:
       arch: arm64v8
-      timeout: 240
+      timeout: 320
       username: $(DOCKER_USERNAME)
       password: $(DOCKER_PASSWORD)
 
