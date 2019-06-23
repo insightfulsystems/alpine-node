@@ -20,6 +20,6 @@
             make build-$(ARCH)
           displayName: Build ${{ parameters.arch }}
         - script: |
-            echo ${{ parameters.password }} | $(DOCKER) login --username ${{ parameters.username }} --password-stdin
+            echo ${{ parameters.password }} | $(DOCKER) login --username ${{ parameters.username }} --password-stdin docker.io
             make push-$(ARCH)
           displayName: Push ${{ parameters.arch }}
