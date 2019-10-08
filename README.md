@@ -18,3 +18,5 @@ Current tags:
 All tags have a full install with `npm` and `yarn`.
 
 Due to the long time required to build the ARM versions (well over 4 hours on typical build agents), this repository cannot be built automatically on the free tiers of either Travis CI or Azure Pipelines and is manually refreshed every three months. 
+
+Also, given that Docker 2.0 `buildx` is not available everywhere, manifests are currently hand-generated, so I suggest using the architecture tags explicitly to avoid surprises.

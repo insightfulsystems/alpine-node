@@ -20,6 +20,7 @@ export SHELL=/bin/bash
 
 qemu:
 	@echo "==> Setting up QEMU"
+	docker pull multiarch/qemu-user-static:register
 	-docker run --rm --privileged multiarch/qemu-user-static:register --reset
 	-mkdir tmp
 	$(foreach ARCH, $(QEMU_ARCHITECTURES), make fetch-qemu-$(ARCH);)
@@ -99,11 +100,11 @@ build-manifest:
 	@echo "--> Creating manifest"
 	docker manifest create --amend \
 		$(IMAGE_NAME):latest \
-		$(foreach arch, $(TARGET_ARCHITECTURES), $(IMAGE_NAME):$(arch) )
+		$(foreach arch, $(TARGET_ARCHITECTURES), $(IMAGE_NAME):$(NODE_MAJOR_VERSION)-$(arch) )
 	$(foreach arch, $(TARGET_ARCHITECTURES), \
 		docker manifest annotate \
 			$(IMAGE_NAME):latest \
-			$(IMAGE_NAME):$(arch) $(shell make expand-$(arch));)
+			$(IMAGE_NAME):$(NODE_MAJOR_VERSION)-$(arch) $(shell make expand-$(arch));)
 
 push-manifest:
 	@echo "--> Pushing manifest"
