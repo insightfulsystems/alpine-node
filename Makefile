@@ -7,8 +7,9 @@ export ALPINE_VERSION=3.11.3
 export QEMU_VERSION=4.2.0-4
 export BASE_IMAGE=alpine
 export BUILD_IMAGE=local/alpine-base
-export NODE_MAJOR_VERSION=10
+export NODE_MAJOR_VERSION=12
 export NODE_VERSION=12.16.1
+export YANR_VERSION=1.22.0
 export TARGET_ARCHITECTURES=amd64 arm32v6 arm32v7 arm64v8
 export QEMU_ARCHITECTURES=arm aarch64
 export SHELL=/bin/bash
@@ -72,6 +73,7 @@ build-%: # This assumes we have a folder for each major version
 		--build-arg ARCH=$(ARCH) \
 		--build-arg BASE=$(BUILD_IMAGE):$(ARCH) \
 		--build-arg NODE_VERSION=$(NODE_VERSION) \
+		--build-arg YARN_VERSION=$(YARN_VERSION) \
 		--build-arg VCS_REF=$(VCS_REF) \
 		--build-arg VCS_URL=$(VCS_URL) \
 		-t $(IMAGE_NAME):$(NODE_MAJOR_VERSION)-$(ARCH) $(NODE_MAJOR_VERSION)
