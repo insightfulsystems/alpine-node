@@ -106,11 +106,14 @@ build-manifest:
 	$(foreach arch, $(TARGET_ARCHITECTURES), \
 		docker manifest annotate \
 			$(IMAGE_NAME):latest \
-			$(IMAGE_NAME):$(NODE_MAJOR_VERSION)-$(arch) $(shell make expand-$(arch));)
+			$(IMAGE_NAME):$(NODE_MAJOR_VERSION)-$(arch) $(shell make -s expand-$(arch));)
+
 
 push-manifest:
 	@echo "--> Pushing manifest"
 	docker manifest push $(IMAGE_NAME):latest
+
+all: qemu wrap build push manifest push-manifest
 
 clean:
 	@echo "==> Cleaning up old images..."
