@@ -10,7 +10,7 @@ Now based on the official `alpine`-based images and [`alpine-python`](https://gi
 Current tags:
 
 * `insightful/alpine-node:latest`, which is a virtual image for
-	* `insightful/alpine-node:12-amd64` (currently at `v12.16.1`)
+	* `insightful/alpine-node:12-amd64` (currently at `v12.18.0`)
 	* `insightful/alpine-node:12-arm32v6`
 	* `insightful/alpine-node:12-arm32v7`
 	* `insightful/alpine-node:12-arm64v8`
@@ -18,5 +18,3 @@ Current tags:
 All tags have a full install with `npm` and `yarn`.
 
 Due to the long time required to build the ARM versions (well over 4 hours on typical build agents), this repository cannot be built automatically on the free tiers of either Travis CI or Azure Pipelines and is manually refreshed every three months. 
-
-Also, given that Docker 2.0 `buildx` is not available everywhere, manifests are currently hand-generated, so I suggest using the architecture tags explicitly to avoid surprises.
