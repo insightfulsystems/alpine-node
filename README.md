@@ -5,15 +5,15 @@
 [![](https://images.microbadger.com/badges/image/insightful/alpine-node.svg)](https://microbadger.com/images/insightful/alpine-node "Get your own image badge on microbadger.com")
 [![](https://images.microbadger.com/badges/version/insightful/alpine-node.svg)](https://microbadger.com/images/insightful/alpine-node "Get your own version badge on microbadger.com")
 
-Now based on the official `alpine`-based images and [`alpine-python`](https://github.com/insightfulsystems/alpine-python) multiarch approach, but targeting _only_ LTS releases.
+Now based on the official `alpine`-based images and [alpine-python](https://github.com/insightfulsystems/alpine-python) multiarch approach, but targeting _only_ LTS releases.
 
 Current tags:
 
 * `insightful/alpine-node:latest`, which is a virtual image for
-	* `insightful/alpine-node:12-amd64` (currently at `v12.16.1`)
-	* `insightful/alpine-node:12-arm32v6`
-	* `insightful/alpine-node:12-arm32v7`
-	* `insightful/alpine-node:12-arm64v8`
+	* `insightful/alpine-node:14-amd64` (currently at `v14.13.0`)
+	* `insightful/alpine-node:14-arm32v6`
+	* `insightful/alpine-node:14-arm32v7`
+	* `insightful/alpine-node:14-arm64v8`
 
 All tags have a full install with `npm` and `yarn`.
 
