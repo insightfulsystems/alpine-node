@@ -61,7 +61,7 @@ wrap-%:
 		--build-arg BASE=$(ARCH)/$(BASE_IMAGE):$(ALPINE_VERSION) \
 		--build-arg VCS_REF=$(VCS_REF) \
 		--build-arg VCS_URL=$(VCS_URL) \
-		-t $(BUILD_IMAGE):$(ARCH) qemu
+		-t $(BUILD_IMAGE):$(ARCH) qemu | sed -e 's/^/local $(ARCH): /;'
 	@echo "--> Done building local base container for $(ARCH)"
 
 build:
@@ -76,7 +76,7 @@ build-%: # This assumes we have a folder for each major version
 		--build-arg YARN_VERSION=$(YARN_VERSION) \
 		--build-arg VCS_REF=$(VCS_REF) \
 		--build-arg VCS_URL=$(VCS_URL) \
-		-t $(IMAGE_NAME):$(NODE_MAJOR_VERSION)-$(ARCH) $(NODE_MAJOR_VERSION)
+		-t $(IMAGE_NAME):$(NODE_MAJOR_VERSION)-$(ARCH) $(NODE_MAJOR_VERSION) | sed -e 's/^/$(ARCH): /;'
 	echo "\n---\nDone building $(ARCH)\n---\n"
 
 push:
