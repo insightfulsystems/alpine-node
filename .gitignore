@@ -1,2 +1,3 @@
 qemu/qemu-arm-static
+qemu/qemu-aarch64-static
 tmp/
