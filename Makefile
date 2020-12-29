@@ -80,7 +80,7 @@ build-%: # This assumes we have a folder for each major version
 	echo "\n---\nDone building $(ARCH)\n---\n"
 
 push:
-	docker push $(IMAGE_NAME)
+	$(foreach var, $(TARGET_ARCHITECTURES), make push-$(var);)
 
 push-%:
 	$(eval ARCH := $*)
