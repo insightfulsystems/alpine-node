@@ -10,7 +10,7 @@ Now based on the official `alpine`-based images and [alpine-python](https://gith
 Current tags:
 
 * `insightful/alpine-node:latest`, which is a virtual image for
-	* `insightful/alpine-node:14-amd64` (currently at `v14.13.0`)
+	* `insightful/alpine-node:14-amd64` (currently at `v14.15.3)
 	* `insightful/alpine-node:14-arm32v6`
 	* `insightful/alpine-node:14-arm32v7`
 	* `insightful/alpine-node:14-arm64v8`
